@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Dalamud.NET.Sdk/15.0.0">
+  <PropertyGroup>
+    <Authors>grittyfrog</Authors>
+    <Company></Company>
+    <Version>0.0.0.1</Version>
+    <Description>Preview duty loot before it drops</Description>
+    <Copyright></Copyright>
+    <PackageProjectUrl>https://github.com/grittyfrog/DutyLootPreview</PackageProjectUrl>
+  </PropertyGroup>
+</Project>

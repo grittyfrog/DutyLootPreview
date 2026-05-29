@@ -1,0 +1,27 @@
+﻿<Project Sdk="Dalamud.NET.Sdk/15.0.0">
+    <!-- Project settings -->
+    <PropertyGroup>
+        <LangVersion>preview</LangVersion>
+        <RestorePackagesWithLockFile>false</RestorePackagesWithLockFile>
+    </PropertyGroup>
+
+    <!-- Dalamud.NET.Sdk settings -->
+    <PropertyGroup>
+        <Use_DalamudPackager>false</Use_DalamudPackager>
+    </PropertyGroup>
+
+    <!-- Assets -->
+    <ItemGroup>
+        <Content Include="Assets\**\*.png" CopyToOutputDirectory="Always"/>
+    </ItemGroup>
+
+    <!-- FFXIVClientStructs -->
+    <PropertyGroup Condition="Exists('..\FFXIVClientStructs')">
+        <Use_Dalamud_FFXIVClientStructs>false</Use_Dalamud_FFXIVClientStructs>
+    </PropertyGroup>
+
+    <ItemGroup Condition="Exists('..\FFXIVClientStructs')">
+        <ProjectReference Include="..\FFXIVClientStructs\FFXIVClientStructs\FFXIVClientStructs.csproj" Private="True" />
+        <ProjectReference Include="..\FFXIVClientStructs\InteropGenerator.Runtime\InteropGenerator.Runtime.csproj" Private="True" />
+    </ItemGroup>
+</Project>

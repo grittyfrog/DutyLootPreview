@@ -8,4 +8,8 @@
     <Copyright></Copyright>
     <PackageProjectUrl>https://github.com/grittyfrog/DutyLootPreview</PackageProjectUrl>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\vendor\KamiToolKit\KamiToolKit.csproj" />
+  </ItemGroup>
 </Project>

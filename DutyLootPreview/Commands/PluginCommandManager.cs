@@ -13,7 +13,7 @@ public class PluginCommandManager : IDisposable {
     }
 
     private void OnMainCommand(string command, string arguments) {
-        Env.PluginWindowManager.MainWindow.Toggle();
+        Env.MainAddon.Toggle();
     }
 
     public void Dispose() {

@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
-using Dalamud.Interface.Windowing;
+using System.Numerics;
 using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using DutyLootPreview.Commands;
 using DutyLootPreview.Windows;
+using KamiToolKit;
 
 namespace DutyLootPreview;
 
@@ -37,12 +38,17 @@ public class Env {
     public static void Initialize(IDalamudPluginInterface pluginInterface) {
         pluginInterface.Create<Env>();
 
-        WindowSystem = new WindowSystem("DutyLootPreview");
+        // KTK must be initialized before any NativeAddon is constructed.
+        KamiToolKitLibrary.Initialize(pluginInterface, "Duty Loot Preview");
 
         Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
 
-        // Order matters: anything a manager needs must be initialized before it.
-        PluginWindowManager = Own(new PluginWindowManager());
+        MainAddon = Own(new MainAddon {
+            InternalName = "DutyLootPreview",
+            Title = "Duty Loot Preview",
+            Size = new Vector2(400, 300),
+        });
+
         PluginCommandManager = Own(new PluginCommandManager());
     }
 
@@ -73,13 +79,12 @@ public class Env {
     /// Plugin globals
     /// ===
 
-    public static WindowSystem WindowSystem { get; private set; } = null!;
     public static Configuration Configuration { get; private set; } = null!;
 
     /// ===
     /// Plugin subsystems
     /// ===
 
-    public static PluginWindowManager PluginWindowManager { get; private set; } = null!;
+    public static MainAddon MainAddon { get; private set; } = null!;
     public static PluginCommandManager PluginCommandManager { get; private set; } = null!;
 }

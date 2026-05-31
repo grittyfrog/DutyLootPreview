@@ -7,9 +7,11 @@
     <Description>Preview duty loot before it drops</Description>
     <Copyright></Copyright>
     <PackageProjectUrl>https://github.com/grittyfrog/DutyLootPreview</PackageProjectUrl>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\vendor\KamiToolKit\KamiToolKit.csproj" />
+    <PackageReference Include="LuminaSupplemental.Excel" Version="4.3.4" />
   </ItemGroup>
 </Project>

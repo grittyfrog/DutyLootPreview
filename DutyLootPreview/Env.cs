@@ -5,8 +5,9 @@ using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using DutyLootPreview.Commands;
-using DutyLootPreview.Windows;
+using DutyLootPreview.Addons;
 using KamiToolKit;
+using DutyLootPreview.Data;
 
 namespace DutyLootPreview;
 
@@ -41,9 +42,9 @@ public class Env {
         // KTK must be initialized before any NativeAddon is constructed.
         KamiToolKitLibrary.Initialize(pluginInterface, "Duty Loot Preview");
 
-        Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
+        Config = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
 
-        MainAddon = Own(new MainAddon {
+        DutyLootPreviewAddon = Own(new DutyLootPreviewAddon {
             InternalName = "DutyLootPreview",
             Title = "Duty Loot Preview",
             Size = new Vector2(400, 300),
@@ -66,25 +67,30 @@ public class Env {
     /// Dalamud Injections
     /// ===
 
-    [PluginService] public static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
-    [PluginService] public static IPluginLog PluginLog { get; private set; } = null!;
     [PluginService] public static ICommandManager CommandManager { get; private set; } = null!;
     [PluginService] public static IChatGui ChatGui { get; private set; } = null!;
     [PluginService] public static IClientState ClientState { get; private set; } = null!;
+    [PluginService] public static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
     [PluginService] public static IDataManager DataManager { get; private set; } = null!;
     [PluginService] public static IFramework Framework { get; private set; } = null!;
+    [PluginService] public static IGameGui GameGui { get; set; } = null!;
+    [PluginService] public static IPlayerState PlayerState { get; set; } = null!;
+    [PluginService] public static IPluginLog PluginLog { get; private set; } = null!;
+    [PluginService] public static ISeStringEvaluator SeStringEvaluator { get; private set; } = null!;
     [PluginService] public static ITextureProvider TextureProvider { get; private set; } = null!;
+    [PluginService] public static IUnlockState UnlockState { get; set; } = null!;
 
     /// ===
     /// Plugin globals
     /// ===
 
-    public static Configuration Configuration { get; private set; } = null!;
+    public static Configuration Config { get; private set; } = null!;
 
     /// ===
     /// Plugin subsystems
     /// ===
 
-    public static MainAddon MainAddon { get; private set; } = null!;
+    public static DutyLootDataLoader DutyLootDataLoader { get; private set; } = null!;
+    public static DutyLootPreviewAddon DutyLootPreviewAddon { get; private set; } = null!;
     public static PluginCommandManager PluginCommandManager { get; private set; } = null!;
 }

@@ -4,6 +4,7 @@ using System.Numerics;
 using DutyLootPreview.Data;
 using DutyLootPreview.Enums;
 using DutyLootPreview.Nodes;
+using DutyLootPreview.Resources;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using KamiToolKit;
 using KamiToolKit.Classes;

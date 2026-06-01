@@ -6,6 +6,7 @@ using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using DutyLootPreview.Commands;
 using DutyLootPreview.Addons;
+using DutyLootPreview.Resources;
 using KamiToolKit;
 using DutyLootPreview.Data;
 
@@ -41,12 +42,13 @@ public class Env {
 
         // KTK must be initialized before any NativeAddon is constructed.
         KamiToolKitLibrary.Initialize(pluginInterface, "Duty Loot Preview");
+        KamiToolKitLibrary.SetResourceManager(Strings.ResourceManager);
 
         Config = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
 
         DutyLootPreviewAddon = Own(new DutyLootPreviewAddon {
             InternalName = "DutyLootPreview",
-            Title = "Duty Loot Preview",
+            Title = Strings.Title_DutyLootPreview,
             Size = new Vector2(400, 300),
         });
 

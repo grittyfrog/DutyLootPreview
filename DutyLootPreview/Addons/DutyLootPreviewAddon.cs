@@ -29,7 +29,7 @@ public unsafe class DutyLootPreviewAddon : NativeAddon {
 
     private DutyLootFilterBarNode? filterBarNode;
     private HorizontalLineNode? separatorNode;
-    private ListNode<DutyLootItemView, DutyLootNode>? listNode;
+    private ListNode<DutyLootItem, DutyLootNode>? listNode;
     private TextNode? hintTextNode;
 
     protected override void OnSetup(AtkUnitBase* addon, Span<AtkValue> atkValueSpan) {
@@ -51,7 +51,7 @@ public unsafe class DutyLootPreviewAddon : NativeAddon {
         var listAreaPosition = ContentStartPosition + new Vector2(0, FilterBarHeight + SeparatorHeight + ItemSpacing);
         var listAreaSize = ContentSize - new Vector2(0, FilterBarHeight + SeparatorHeight + ItemSpacing);
 
-        listNode = new ListNode<DutyLootItemView, DutyLootNode> {
+        listNode = new ListNode<DutyLootItem, DutyLootNode> {
             Position = listAreaPosition,
             Size = listAreaSize,
             OptionsList = [],
@@ -98,22 +98,16 @@ public unsafe class DutyLootPreviewAddon : NativeAddon {
             _ => items,
         };
 
-        var viewModels = filteredItems
-            .Order()
-            .Select(item => new DutyLootItemView(
-                Item: item,
-                IsFavorite: Env.Config.FavoriteItems.Contains(item.ItemId)
-            ))
-            .ToList();
+        var displayItems = filteredItems.Order().ToList();
 
-        listNode.OptionsList = viewModels;
+        listNode.OptionsList = displayItems;
         listNode.ResetScroll();
 
         var hasData = items.Count != 0;
         filterBarNode.IsVisible = hasData;
         separatorNode.IsVisible = hasData;
 
-        var hasResults = viewModels.Count > 0;
+        var hasResults = displayItems.Count > 0;
         listNode.IsVisible = hasResults;
         hintTextNode.IsVisible = !hasResults;
 

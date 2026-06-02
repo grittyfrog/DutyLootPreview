@@ -45,6 +45,7 @@ public class Env {
         KamiToolKitLibrary.SetResourceManager(Strings.ResourceManager);
 
         Config = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
+        DutyLootDataLoader = Own(new DutyLootDataLoader());
 
         DutyLootPreviewAddon = Own(new DutyLootPreviewAddon {
             InternalName = "DutyLootPreview",

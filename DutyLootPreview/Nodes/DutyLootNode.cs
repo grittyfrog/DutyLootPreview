@@ -15,7 +15,7 @@ using DutyLootPreview.Extensions;
 
 namespace DutyLootPreview.Nodes;
 
-public unsafe class DutyLootNode : ListItemNode<DutyLootItemView>, IListItemNode {
+public unsafe class DutyLootNode : ListItemNode<DutyLootItem>, IListItemNode {
     public static float ItemHeight => DutyLootPreviewAddon.ItemHeight;
     public static float IconPadding => 2.0f;
 
@@ -92,7 +92,8 @@ public unsafe class DutyLootNode : ListItemNode<DutyLootItemView>, IListItemNode
     }
 
     private void OnLeftClick() {
-        if (ItemData is not { Item: var item }) return;
+        var item = ItemData;
+        if (item is not {}) return;
 
         if (item.CanTryOn) {
             AgentTryon.TryOn(0, item.ItemId);
@@ -100,7 +101,8 @@ public unsafe class DutyLootNode : ListItemNode<DutyLootItemView>, IListItemNode
     }
 
     private void OnRightClick() {
-        if (ItemData is not { Item: var item }) return;
+        var item = ItemData;
+        if (item is not {}) return;
 
         contextMenu.Clear();
 
@@ -170,9 +172,7 @@ public unsafe class DutyLootNode : ListItemNode<DutyLootItemView>, IListItemNode
         itemNameTextNode.Position = new Vector2(iconEndPos.X + 2.0f, 0.0f);
     }
 
-    protected override void SetNodeData(DutyLootItemView view) {
-        var item = view.Item;
-
+    protected override void SetNodeData(DutyLootItem item) {
         iconNode.IconId = item.IconId;
         itemNameTextNode.String = item.Name;
         infoIconNode.TextTooltip = string.Join("\n", item.Sources.Distinct());
@@ -189,6 +189,6 @@ public unsafe class DutyLootNode : ListItemNode<DutyLootItemView>, IListItemNode
         }
 
         iconNode.ItemTooltip = item.ItemId;
-        favoriteStarNode.IsVisible = view.IsFavorite;
+        favoriteStarNode.IsVisible = Env.Config.FavoriteItems.Contains(item.ItemId);
     }
 }

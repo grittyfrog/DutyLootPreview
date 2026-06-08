@@ -6,8 +6,9 @@ using FFXIVClientStructs.FFXIV.Component.GUI;
 using KamiToolKit.Nodes;
 using DutyLootPreview.Enums;
 using KamiToolKit.Premade.Node;
+using DutyLootPreview.Resources;
 
-namespace DutyLootPreview.Nodes;
+namespace DutyLootPreview.UI;
 
 public unsafe class DutyLootFilterBarNode : HorizontalListNode {
     private readonly Dictionary<LootFilter, IconToggleNode> filterButtons = new();
@@ -25,10 +26,10 @@ public unsafe class DutyLootFilterBarNode : HorizontalListNode {
     public DutyLootFilterBarNode() {
         ItemSpacing = 1;
 
-        // AddButton(LootFilter.All, 61808, Strings.DutyLoot_Filter_All);
-        // AddButton(LootFilter.Favorites, 61830, Strings.DutyLoot_Filter_Favorites);
-        // AddButton(LootFilter.Equipment, 61828, Strings.DutyLoot_Filter_Equipment);
-        // AddButton(LootFilter.Misc, 61807, Strings.DutyLoot_Filter_Misc);
+        AddButton(LootFilter.All, 61808, Strings.DutyLoot_Filter_All);
+        AddButton(LootFilter.Favorites, 61830, Strings.DutyLoot_Filter_Favorites);
+        AddButton(LootFilter.Equipment, 61828, Strings.DutyLoot_Filter_Equipment);
+        AddButton(LootFilter.Misc, 61807, Strings.DutyLoot_Filter_Misc);
 
         UpdateButtonStates();
     }

@@ -92,4 +92,7 @@ Data will be updated as it becomes available, do not request data updates.</valu
   <data name="Title_DutyLootPreview" xml:space="preserve">
     <value>Duty Loot Preview</value>
   </data>
+  <data name="DutyLoot_DutyItemSource_DungeonChest" xml:space="preserve">
+    <value>Dungeon Chest</value>
+  </data>
 </root>

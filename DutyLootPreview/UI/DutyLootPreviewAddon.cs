@@ -3,14 +3,15 @@ using System.Linq;
 using System.Numerics;
 using DutyLootPreview.Data;
 using DutyLootPreview.Enums;
-using DutyLootPreview.Nodes;
+using DutyLootPreview.Extensions;
 using DutyLootPreview.Resources;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using KamiToolKit;
 using KamiToolKit.Classes;
 using KamiToolKit.Nodes;
+using Lumina.Excel.Sheets;
 
-namespace DutyLootPreview.Addons;
+namespace DutyLootPreview.UI;
 
 /// <summary>
 /// The main Duty Loot Preview window. Currently a walking-skeleton placeholder
@@ -24,21 +25,38 @@ public unsafe class DutyLootPreviewAddon : NativeAddon {
     private const float SeparatorHeight = 4.0f;
     private const float WindowOverhead = 67.75f;
 
+    private const float WindowWidth = 350.0f;
     private const float ListAreaHeight = VisibleItemCount * ItemHeight + (VisibleItemCount - 1) * ItemSpacing;
-    internal const float WindowHeight = ListAreaHeight + FilterBarHeight + SeparatorHeight + ItemSpacing + WindowOverhead;
+    private const float WindowHeight = ListAreaHeight + FilterBarHeight + SeparatorHeight + ItemSpacing + WindowOverhead;
+
+    public DutyLootPreviewAddon() {
+        Size = new Vector2(WindowWidth, WindowHeight);
+    }
 
     private DutyLootFilterBarNode? filterBarNode;
     private HorizontalLineNode? separatorNode;
-    private ListNode<DutyLootItem, DutyLootNode>? listNode;
+    private ListNode<DutyItem, DutyLootNode>? listNode;
     private TextNode? hintTextNode;
 
-    protected override void OnSetup(AtkUnitBase* addon, Span<AtkValue> atkValueSpan) {
-        Env.DutyLootDataLoader.OnChanged += OnDataLoaderStateChanged;
+    /// The ContentFinderConditionId to show a loot preview for.
+    public uint? ContentFinderConditionId {
+        get;
+        set {
+            if (field != value) {
+                field = value;
+                refresh = true;
+            }
+        }
+    }
 
+    // If true: Refresh our data.
+    private bool refresh = true;
+
+    protected override void OnSetup(AtkUnitBase* addon, Span<AtkValue> atkValueSpan) {
         filterBarNode = new DutyLootFilterBarNode {
             Position = ContentStartPosition,
             Size = new Vector2(ContentSize.X, FilterBarHeight),
-            OnFilterChanged = _ => UpdateList(),
+            OnFilterChanged = _ => Refresh(),
         };
         filterBarNode.AttachNode(this);
 
@@ -51,7 +69,7 @@ public unsafe class DutyLootPreviewAddon : NativeAddon {
         var listAreaPosition = ContentStartPosition + new Vector2(0, FilterBarHeight + SeparatorHeight + ItemSpacing);
         var listAreaSize = ContentSize - new Vector2(0, FilterBarHeight + SeparatorHeight + ItemSpacing);
 
-        listNode = new ListNode<DutyLootItem, DutyLootNode> {
+        listNode = new ListNode<DutyItem, DutyLootNode> {
             Position = listAreaPosition,
             Size = listAreaSize,
             OptionsList = [],
@@ -71,30 +89,32 @@ public unsafe class DutyLootPreviewAddon : NativeAddon {
         UpdateHintTextNodePosition();
         hintTextNode.AttachNode(this);
 
-        UpdateList();
+        filterBarNode.OnFilterChanged = OnFilterChanged;
     }
 
-    private void OnDataLoaderStateChanged()
-        => Env.Framework.RunOnFrameworkThread(UpdateList);
+    protected override void OnUpdate(AtkUnitBase* addon) {
+        Refresh();
+    }
 
-    protected override void OnFinalize(AtkUnitBase* addon)
-        => Env.DutyLootDataLoader.OnChanged -= OnDataLoaderStateChanged;
+    private void OnFilterChanged(LootFilter filer) {
+        refresh = true;
+    }
 
-    private void UpdateList() {
+    private void Refresh() {
         if (listNode is null || hintTextNode is null || filterBarNode is null || separatorNode is null) return;
 
-        var dutyLootData = Env.DutyLootDataLoader.ActiveDutyLootData;
-        if (dutyLootData is null && !Env.DutyLootDataLoader.IsLoading) {
-            Close();
-            return;
-        }
+        if (!refresh) { return; }
+        refresh = false;
 
-        var items = dutyLootData?.Items ?? [];
+        var dutyInfo = ContentFinderConditionId.HasValue
+            ? Env.DutyInfoService.GetDutyInfo(ContentFinderConditionId.Value)
+            : null;
+        var items = dutyInfo?.DutyItems ?? [];
 
         var filteredItems = filterBarNode.CurrentFilter switch {
-            LootFilter.Favorites => items.Where(item => Env.Config.FavoriteItems.Contains(item.ItemId)),
-            LootFilter.Equipment => items.Where(item => item.IsEquipment),
-            LootFilter.Misc => items.Where(item => !item.IsEquipment),
+            LootFilter.Favorites => items.Where(dutyItem => Env.Config.FavoriteItems.Contains(dutyItem.Item.RowId)),
+            LootFilter.Equipment => items.Where(dutyItem => dutyItem.Item.IsEquipment),
+            LootFilter.Misc => items.Where(dutyItem => !dutyItem.Item.IsEquipment),
             _ => items,
         };
 
@@ -113,7 +133,6 @@ public unsafe class DutyLootPreviewAddon : NativeAddon {
 
         if (!hasResults) {
             hintTextNode.String = true switch {
-                _ when Env.DutyLootDataLoader.IsLoading => Strings.DutyLoot_LoadingMessage,
                 _ when hasData => Strings.DutyLoot_NoResultsMessage,
                 _ => Strings.DutyLoot_NoItemsMessage,
             };

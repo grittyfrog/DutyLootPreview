@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
-using System.Numerics;
 using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using DutyLootPreview.Commands;
-using DutyLootPreview.Addons;
+using DutyLootPreview.UI;
 using DutyLootPreview.Resources;
 using KamiToolKit;
 using DutyLootPreview.Data;
+using DutyLootPreview.Extensions.LuminaSupplemental;
 
 namespace DutyLootPreview;
 
@@ -45,14 +45,16 @@ public class Env {
         KamiToolKitLibrary.SetResourceManager(Strings.ResourceManager);
 
         Config = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
-        DutyLootDataLoader = Own(new DutyLootDataLoader());
+
+        LumSup = new LumSupModule();
+        DutyInfoService = new DutyInfoService();
 
         DutyLootPreviewAddon = Own(new DutyLootPreviewAddon {
             InternalName = "DutyLootPreview",
             Title = Strings.Title_DutyLootPreview,
-            Size = new Vector2(400, 300),
         });
 
+        DutyLootPreviewAgent = Own(new DutyLootPreviewAgent());
         PluginCommandManager = Own(new PluginCommandManager());
     }
 
@@ -93,7 +95,9 @@ public class Env {
     /// Plugin subsystems
     /// ===
 
-    public static DutyLootDataLoader DutyLootDataLoader { get; private set; } = null!;
+    public static LumSupModule LumSup { get; private set; } = null!;
+    public static DutyInfoService DutyInfoService { get; private set; } = null!;
     public static DutyLootPreviewAddon DutyLootPreviewAddon { get; private set; } = null!;
+    public static DutyLootPreviewAgent DutyLootPreviewAgent { get; private set; } = null!;
     public static PluginCommandManager PluginCommandManager { get; private set; } = null!;
 }

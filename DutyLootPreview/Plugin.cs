@@ -12,6 +12,8 @@ public sealed class Plugin : IDalamudPlugin {
         pluginInterface.LanguageChanged += Localization.SetCultureInfo;
 
         Env.Initialize(pluginInterface);
+
+        Env.DutyLootPreviewAgent.Enable();
     }
 
     public void Dispose() {

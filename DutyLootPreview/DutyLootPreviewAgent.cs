@@ -23,7 +23,6 @@ public class DutyLootPreviewAgent : IDisposable {
             OnRefresh = _ => RefreshAddons(),   
             OnFinalize = _ => RefreshAddons(),
         };
-        contentsFinder.Enable();
 
         raidFinder = new AddonController<AddonRaidFinder> {
             AddonName = "RaidFinder",
@@ -31,20 +30,25 @@ public class DutyLootPreviewAgent : IDisposable {
             OnRefresh = _ => RefreshAddons(),   
             OnFinalize = _ => RefreshAddons(),
         };
-        raidFinder.Enable();
+
+        // KTK needs these on the main thread.
+        Env.Framework.Run(() => {
+            contentsFinder.Enable();
+            raidFinder.Enable();
+        }).GetAwaiter().GetResult();
     }
 
     public void Dispose() {
         Env.ClientState.TerritoryChanged -= OnTerritoryChanged;
         Env.GameGui.AgentUpdate -= OnAgentUpdate;
-        contentsFinder?.Dispose();
-        raidFinder?.Dispose();
+        Env.Framework.Run(() => {
+            contentsFinder?.Dispose();
+            raidFinder?.Dispose();
+        }).GetAwaiter().GetResult();
     }
 
     private void RefreshAddons() {
-        Env.PluginLog.Debug("Refresh");
         var activeContentId = GetActiveContentId();
-        Env.PluginLog.Debug($"Refresh: {activeContentId}");
         Env.DutyLootPreviewAddon.ContentFinderConditionId = activeContentId;
     }
 

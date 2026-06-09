@@ -66,6 +66,8 @@ public class Env {
                 PluginLog?.Error(ex, "Error disposing subsystem");
             }
         }
+
+        KamiToolKitLibrary.Cleanup();
     }
 
     /// ===

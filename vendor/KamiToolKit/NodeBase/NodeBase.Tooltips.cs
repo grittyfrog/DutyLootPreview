@@ -79,6 +79,16 @@ public unsafe partial class NodeBase {
         OnVisibilityToggled += ToggleCollisionFlag;
         ToggleCollisionFlag(IsVisible);
 
+        // LOCAL PATCH (DutyLootPreview): KTK commit 2f969471 made the collision/draw
+        // node-list rebuild synchronous at attach time instead of deferred to next frame.
+        // Tooltips set HasCollision *after* attach (e.g. in a ListItem's SetNodeData), so
+        // without an explicit refresh here the node is never added to the addon's collision
+        // list and MouseOver never fires. Rebuild the lists now that collision is enabled.
+        if (ParentAddon is not null) {
+            ParentAddon->UldManager.UpdateDrawNodeList();
+            ParentAddon->UpdateCollisionNodeList(false);
+        }
+
         tooltipEventsRegistered = true;
     }
 

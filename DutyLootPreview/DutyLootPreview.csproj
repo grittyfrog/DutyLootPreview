@@ -11,16 +11,25 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Aigamo.ResXGenerator" Version="4.4.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <ProjectReference Include="..\vendor\KamiToolKit\KamiToolKit.csproj" />
     <PackageReference Include="LuminaSupplemental.Excel" Version="4.3.4" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Update="Resources\Strings.resx">
-      <StronglyTypedLanguage>CSharp</StronglyTypedLanguage>
-      <StronglyTypedNamespace>DutyLootPreview.Resources</StronglyTypedNamespace>
-      <StronglyTypedClassName>Strings</StronglyTypedClassName>
-      <StronglyTypedFileName>$(IntermediateOutputPath)Strings.Designer.cs</StronglyTypedFileName>
     </EmbeddedResource>
   </ItemGroup>
+
+  <PropertyGroup>
+    <ResXGenerator_NullForgivingOperators>true</ResXGenerator_NullForgivingOperators>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)Generated</CompilerGeneratedFilesOutputPath>
+  </PropertyGroup>
 </Project>

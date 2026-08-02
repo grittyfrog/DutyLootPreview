@@ -5,10 +5,10 @@ using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using DutyLootPreview.Commands;
 using DutyLootPreview.UI;
-using DutyLootPreview.Resources;
 using KamiToolKit;
 using DutyLootPreview.Data;
 using DutyLootPreview.Extensions.LuminaSupplemental;
+using DutyLootPreview.Resources;
 
 namespace DutyLootPreview;
 
@@ -62,7 +62,8 @@ public class Env {
         while (Owned.Count > 0) {
             try {
                 Owned.Pop().Dispose();
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 PluginLog?.Error(ex, "Error disposing subsystem");
             }
         }

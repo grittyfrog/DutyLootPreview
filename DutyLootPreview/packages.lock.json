@@ -2,6 +2,12 @@
   "version": 1,
   "dependencies": {
     "net10.0-windows7.0": {
+      "Aigamo.ResXGenerator": {
+        "type": "Direct",
+        "requested": "[4.4.0, )",
+        "resolved": "4.4.0",
+        "contentHash": "Av7JEjP7wzbtc0mo3yTJwzooKiklemqooOtYkoc5bU0fS/KtFQxS+MKztdgY6HtSsxLVwcL4drun5uo7BwDutQ=="
+      },
       "DalamudPackager": {
         "type": "Direct",
         "requested": "[15.0.0, )",

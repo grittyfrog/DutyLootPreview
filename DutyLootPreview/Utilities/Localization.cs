@@ -14,7 +14,7 @@ public static class Localization {
     public static void SetCultureInfo(object? language) {
         var languageName = language?.ToString();
 
-        Strings.Culture = languageName switch {
+        Strings.CultureInfo = languageName switch {
             "ja" => CultureInfo.GetCultureInfo("ja-JP"),
             "zh" => CultureInfo.GetCultureInfo("zh-CN"),
             "de" => CultureInfo.GetCultureInfo("de-DE"),
@@ -22,6 +22,6 @@ public static class Localization {
             _ => CultureInfo.GetCultureInfo("en-US"),
         };
 
-        KamiToolKitLibrary.SetCurrentCulture(Strings.Culture);
+        KamiToolKitLibrary.SetCurrentCulture(Strings.CultureInfo);
     }
 }

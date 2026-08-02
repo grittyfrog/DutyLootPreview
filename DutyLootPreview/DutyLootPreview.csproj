@@ -15,7 +15,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <ProjectReference Include="..\vendor\KamiToolKit\KamiToolKit.csproj" />
+    <PackageReference Include="KamiToolKit" Version="2.2.9" />
     <PackageReference Include="LuminaSupplemental.Excel" Version="4.3.4" />
   </ItemGroup>
 

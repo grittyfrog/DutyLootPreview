@@ -5,8 +5,8 @@ using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using KamiToolKit.Nodes;
 using DutyLootPreview.Enums;
-using KamiToolKit.Premade.Node;
 using DutyLootPreview.Resources;
+using DutyLootPreview.UI.Generic;
 
 namespace DutyLootPreview.UI;
 

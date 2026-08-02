@@ -13,7 +13,7 @@ using DutyLootPreview.Extensions;
 using KamiToolKit.Interfaces;
 using KamiToolKit.Nodes.Simplified;
 
-namespace DutyLootPreview.UI.DutyLootWindow;
+namespace DutyLootPreview.Features.DutyLootWindow;
 
 public unsafe class DutyLootNode : ListItemNode<DutyItem>, IListItemNode {
     public static float ItemHeight => DutyLootPreviewAddon.ItemHeight;

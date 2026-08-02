@@ -16,6 +16,7 @@ public sealed class Plugin : IDalamudPlugin {
         Env.Framework.Run(() => {
             Env.DutyLootPreviewAgent.Enable();
             Env.DutyLootJournalUiController.Enable();
+            Env.DutyLootInDutyUiController.Enable();
         });
 
     }

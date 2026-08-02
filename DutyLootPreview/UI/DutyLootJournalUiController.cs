@@ -20,11 +20,9 @@ public class DutyLootJournalUiController : IDisposable {
         set {
             if (field != value) {
                 field = value;
-                refresh = true;
             }
         }
     }
-    private bool refresh = true;
 
     public void Enable() {
         unsafe {

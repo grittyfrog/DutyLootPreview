@@ -8,8 +8,8 @@ using KamiToolKit;
 using DutyLootPreview.Data;
 using DutyLootPreview.Extensions.LuminaSupplemental;
 using DutyLootPreview.Resources;
-using DutyLootPreview.UI.DutyLootWindow;
 using DutyLootPreview.UI;
+using DutyLootPreview.Features.DutyLootWindow;
 
 namespace DutyLootPreview;
 
@@ -57,6 +57,7 @@ public class Env {
 
         DutyLootPreviewAgent = Own(new DutyLootPreviewAgent());
         DutyLootJournalUiController = Own(new DutyLootJournalUiController());
+        DutyLootInDutyUiController = Own(new DutyLootInDutyUiController());
         PluginCommandManager = Own(new PluginCommandManager());
     }
 
@@ -105,5 +106,6 @@ public class Env {
     public static DutyLootPreviewAddon DutyLootPreviewAddon { get; private set; } = null!;
     public static DutyLootPreviewAgent DutyLootPreviewAgent { get; private set; } = null!;
     public static DutyLootJournalUiController DutyLootJournalUiController { get; private set; } = null!;
+    public static DutyLootInDutyUiController DutyLootInDutyUiController { get; private set; } = null!;
     public static PluginCommandManager PluginCommandManager { get; private set; } = null!;
 }

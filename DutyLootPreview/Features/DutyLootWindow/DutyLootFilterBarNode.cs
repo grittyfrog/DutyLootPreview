@@ -8,7 +8,7 @@ using DutyLootPreview.Enums;
 using DutyLootPreview.Resources;
 using DutyLootPreview.UI.Generic;
 
-namespace DutyLootPreview.UI;
+namespace DutyLootPreview.Features.DutyLootWindow;
 
 public unsafe class DutyLootFilterBarNode : HorizontalListNode {
     private readonly Dictionary<LootFilter, IconToggleNode> filterButtons = new();

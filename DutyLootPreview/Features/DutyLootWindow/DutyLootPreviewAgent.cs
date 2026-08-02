@@ -6,7 +6,7 @@ using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using KamiToolKit.Controllers;
 using Lumina.Excel.Sheets;
 
-namespace DutyLootPreview.UI.DutyLootWindow;
+namespace DutyLootPreview.Features.DutyLootWindow;
 
 public class DutyLootPreviewAgent : IDisposable {
     private AddonController<AddonContentsFinder>? contentsFinder;

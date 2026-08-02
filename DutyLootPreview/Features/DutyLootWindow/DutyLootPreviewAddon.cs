@@ -12,7 +12,7 @@ using KamiToolKit.Classes;
 using KamiToolKit.Nodes;
 using Lumina.Excel.Sheets;
 
-namespace DutyLootPreview.UI.DutyLootWindow;
+namespace DutyLootPreview.Features.DutyLootWindow;
 
 /// <summary>
 /// The main Duty Loot Preview window. Currently a walking-skeleton placeholder

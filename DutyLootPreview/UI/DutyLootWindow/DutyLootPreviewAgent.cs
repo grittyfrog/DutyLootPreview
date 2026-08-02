@@ -5,9 +5,8 @@ using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using KamiToolKit.Controllers;
 using Lumina.Excel.Sheets;
-using Action = System.Action;
 
-namespace DutyLootPreview;
+namespace DutyLootPreview.UI.DutyLootWindow;
 
 public class DutyLootPreviewAgent : IDisposable {
     private AddonController<AddonContentsFinder>? contentsFinder;
@@ -15,27 +14,24 @@ public class DutyLootPreviewAgent : IDisposable {
 
     public unsafe void Enable() {
         Env.ClientState.TerritoryChanged += OnTerritoryChanged;
-        Env.GameGui.AgentUpdate += OnAgentUpdate; 
+        Env.GameGui.AgentUpdate += OnAgentUpdate;
 
         contentsFinder = new AddonController<AddonContentsFinder> {
             AddonName = "ContentsFinder",
             OnSetup = _ => RefreshAddons(),
-            OnRefresh = _ => RefreshAddons(),   
+            OnRefresh = _ => RefreshAddons(),
             OnFinalize = _ => RefreshAddons(),
         };
 
         raidFinder = new AddonController<AddonRaidFinder> {
             AddonName = "RaidFinder",
             OnSetup = _ => RefreshAddons(),
-            OnRefresh = _ => RefreshAddons(),   
+            OnRefresh = _ => RefreshAddons(),
             OnFinalize = _ => RefreshAddons(),
         };
 
-        // KTK needs these on the main thread.
-        Env.Framework.Run(() => {
-            contentsFinder.Enable();
-            raidFinder.Enable();
-        }).GetAwaiter().GetResult();
+        contentsFinder.Enable();
+        raidFinder.Enable();
     }
 
     public void Dispose() {
@@ -50,6 +46,7 @@ public class DutyLootPreviewAgent : IDisposable {
     private void RefreshAddons() {
         var activeContentId = GetActiveContentId();
         Env.DutyLootPreviewAddon.ContentFinderConditionId = activeContentId;
+        Env.DutyLootJournalUiController.ActiveContentFinderConditionId = activeContentId;
     }
 
     private static unsafe uint? GetActiveContentId() {

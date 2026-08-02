@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Frozen;
-using System.Collections.Generic;
 using System.Linq;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 using Lumina.Excel.Sheets;
-using Lumina.Text.ReadOnly;
 using CabinetSheet = Lumina.Excel.Sheets.Cabinet;
 
 namespace DutyLootPreview.Extensions;

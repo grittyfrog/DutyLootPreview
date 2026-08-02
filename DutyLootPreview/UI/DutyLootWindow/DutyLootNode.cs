@@ -7,13 +7,13 @@ using KamiToolKit.ContextMenu;
 using KamiToolKit.Enums;
 using KamiToolKit.Nodes;
 using KamiToolKit.Extensions;
-using KamiToolKit.Premade.Node.Simple;
 using DutyLootPreview.Data;
 using ContextMenu = KamiToolKit.ContextMenu.ContextMenu;
 using DutyLootPreview.Extensions;
-using Lumina.Excel.Sheets;
+using KamiToolKit.Interfaces;
+using KamiToolKit.Nodes.Simplified;
 
-namespace DutyLootPreview.UI;
+namespace DutyLootPreview.UI.DutyLootWindow;
 
 public unsafe class DutyLootNode : ListItemNode<DutyItem>, IListItemNode {
     public static float ItemHeight => DutyLootPreviewAddon.ItemHeight;
@@ -77,7 +77,7 @@ public unsafe class DutyLootNode : ListItemNode<DutyItem>, IListItemNode {
         };
         armoireIconNode.AttachNode(this);
 
-        CollisionNode.AddEvent(AtkEventType.MouseClick, MouseClickCallback);
+        AddEvent(AtkEventType.MouseClick, MouseClickCallback);
     }
 
     private void MouseClickCallback(AtkEventListener* atkEventListener, AtkEventType atkEventType, int i, AtkEvent* atkEvent, AtkEventData* atkEventData) {

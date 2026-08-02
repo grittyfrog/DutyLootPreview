@@ -4,11 +4,12 @@ using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using DutyLootPreview.Commands;
-using DutyLootPreview.UI;
 using KamiToolKit;
 using DutyLootPreview.Data;
 using DutyLootPreview.Extensions.LuminaSupplemental;
 using DutyLootPreview.Resources;
+using DutyLootPreview.UI.DutyLootWindow;
+using DutyLootPreview.UI;
 
 namespace DutyLootPreview;
 
@@ -55,6 +56,7 @@ public class Env {
         });
 
         DutyLootPreviewAgent = Own(new DutyLootPreviewAgent());
+        DutyLootJournalUiController = Own(new DutyLootJournalUiController());
         PluginCommandManager = Own(new PluginCommandManager());
     }
 
@@ -102,5 +104,6 @@ public class Env {
     public static DutyInfoService DutyInfoService { get; private set; } = null!;
     public static DutyLootPreviewAddon DutyLootPreviewAddon { get; private set; } = null!;
     public static DutyLootPreviewAgent DutyLootPreviewAgent { get; private set; } = null!;
+    public static DutyLootJournalUiController DutyLootJournalUiController { get; private set; } = null!;
     public static PluginCommandManager PluginCommandManager { get; private set; } = null!;
 }

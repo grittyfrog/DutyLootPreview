@@ -13,7 +13,11 @@ public sealed class Plugin : IDalamudPlugin {
 
         Env.Initialize(pluginInterface);
 
-        Env.DutyLootPreviewAgent.Enable();
+        Env.Framework.Run(() => {
+            Env.DutyLootPreviewAgent.Enable();
+            Env.DutyLootJournalUiController.Enable();
+        });
+
     }
 
     public void Dispose() {

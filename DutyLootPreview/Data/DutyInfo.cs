@@ -15,12 +15,18 @@ public class DutyInfo {
     public uint? ContentId { get; init; }
 
     public List<DutyItem> DutyItems { get; init; } = new();
+
+    public bool AllUnlocksUnlocked() {
+        var unlockableItems = DutyItems.Where(di => di.Item.IsUnlockable || di.Item.IsStorableInCabinet);
+        var allUnlockablesUnlocked = unlockableItems.All(di => di.Item.IsUnlocked || di.Item.IsStoredInCabinet);
+        return allUnlockablesUnlocked;
+    }
 }
 
 public record class DutyItem(
     uint ContentFinderConditionId,
     Item Item,
-    List<DutyItemSource> Sources 
+    List<DutyItemSource> Sources
 ) : IComparable<DutyItem> {
     public int CompareTo(DutyItem? other) {
         if (other is null) return 1;
@@ -93,6 +99,6 @@ public abstract record DutyItemSource {
     }
 
     public static DutyItemSource FromDungeon(DungeonChestItem item) {
-        return new DutyItemSource.DungeonChest();  
+        return new DutyItemSource.DungeonChest();
     }
 }

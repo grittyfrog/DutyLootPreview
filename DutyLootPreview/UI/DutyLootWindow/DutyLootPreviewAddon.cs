@@ -7,11 +7,12 @@ using DutyLootPreview.Extensions;
 using DutyLootPreview.Resources;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using KamiToolKit;
+using KamiToolKit.BaseTypes;
 using KamiToolKit.Classes;
 using KamiToolKit.Nodes;
 using Lumina.Excel.Sheets;
 
-namespace DutyLootPreview.UI;
+namespace DutyLootPreview.UI.DutyLootWindow;
 
 /// <summary>
 /// The main Duty Loot Preview window. Currently a walking-skeleton placeholder
@@ -38,7 +39,6 @@ public unsafe class DutyLootPreviewAddon : NativeAddon {
     private ListNode<DutyItem, DutyLootNode>? listNode;
     private TextNode? hintTextNode;
 
-    /// The ContentFinderConditionId to show a loot preview for.
     public uint? ContentFinderConditionId {
         get;
         set {
@@ -48,8 +48,6 @@ public unsafe class DutyLootPreviewAddon : NativeAddon {
             }
         }
     }
-
-    // If true: Refresh our data.
     private bool refresh = true;
 
     protected override void OnSetup(AtkUnitBase* addon, Span<AtkValue> atkValueSpan) {

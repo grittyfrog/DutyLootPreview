@@ -2,6 +2,7 @@ using System.Numerics;
 using Dalamud.Plugin.Services;
 using DutyLootPreview.Extensions;
 using DutyLootPreview.Resources;
+using DutyLootPreview.UI;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using KamiToolKit.Enums;
@@ -9,9 +10,9 @@ using KamiToolKit.Extensions;
 using KamiToolKit.UiOverlay;
 using Action = System.Action;
 
-namespace DutyLootPreview.UI;
+namespace DutyLootPreview.Features.InDutyIntegration;
 
-public unsafe class DutyLootInDutyButtonNode : OverlayNode {
+public unsafe class InDutyOverlayNode : OverlayNode {
     public override OverlayLayer OverlayLayer => OverlayLayer.BehindUserInterface;
 
     private readonly DutyLootOpenWindowButtonNode buttonNode;
@@ -21,7 +22,12 @@ public unsafe class DutyLootInDutyButtonNode : OverlayNode {
         set => buttonNode.OnClick = value;
     }
 
-    public DutyLootInDutyButtonNode() {
+    public bool CheckmarkVisible {
+        get => buttonNode.IsVisible;
+        set => buttonNode.IsVisible = value;
+    }
+
+    public InDutyOverlayNode() {
         buttonNode = new DutyLootOpenWindowButtonNode() {
             Size = new Vector2(32.0f, 32.0f),
             Scale = new Vector2(20.0f / 32.0f),

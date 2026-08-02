@@ -1,11 +1,12 @@
 using System;
 using System.Numerics;
 using DutyLootPreview.Resources;
+using DutyLootPreview.UI;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using KamiToolKit.Controllers;
 using KamiToolKit.Enums;
 
-namespace DutyLootPreview.UI;
+namespace DutyLootPreview.Features.JournalIntegration;
 
 /// <summary>
 /// Attaches the "Open Duty Loot" button to the Journal.

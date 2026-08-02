@@ -1,4 +1,4 @@
-namespace DutyLootPreview.Enums;
+namespace DutyLootPreview.Features.DutyLootWindow;
 
 public enum LootFilter {
     All,

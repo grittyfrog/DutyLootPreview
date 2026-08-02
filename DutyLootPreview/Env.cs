@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
-using DutyLootPreview.Commands;
 using KamiToolKit;
 using DutyLootPreview.Data;
 using DutyLootPreview.Extensions.LuminaSupplemental;
 using DutyLootPreview.Resources;
-using DutyLootPreview.UI;
 using DutyLootPreview.Features.DutyLootWindow;
+using DutyLootPreview.Features.InDutyIntegration;
+using DutyLootPreview.Features.JournalIntegration;
 
 namespace DutyLootPreview;
 
@@ -45,20 +45,19 @@ public class Env {
         KamiToolKitLibrary.Initialize(pluginInterface, "Duty Loot Preview");
         KamiToolKitLibrary.SetResourceManager(Strings.ResourceManager);
 
-        Config = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
+        Config = PluginInterface.GetPluginConfig() as DutyLootPreviewConfiguration ?? new DutyLootPreviewConfiguration();
 
         LumSup = new LumSupModule();
         DutyInfoService = new DutyInfoService();
 
-        DutyLootPreviewAddon = Own(new DutyLootPreviewAddon {
+        DutyLootPreviewAddon = Own(new DutyLootWindowAddon {
             InternalName = "DutyLootPreview",
             Title = Strings.Title_DutyLootPreview,
         });
 
-        DutyLootPreviewAgent = Own(new DutyLootPreviewAgent());
+        DutyLootPreviewAgent = Own(new DutyLootWindowAgent());
         DutyLootJournalUiController = Own(new DutyLootJournalUiController());
-        DutyLootInDutyUiController = Own(new DutyLootInDutyUiController());
-        PluginCommandManager = Own(new PluginCommandManager());
+        DutyLootInDutyUiController = Own(new InDutyController());
     }
 
     public static void Dispose() {
@@ -95,7 +94,7 @@ public class Env {
     /// Plugin globals
     /// ===
 
-    public static Configuration Config { get; private set; } = null!;
+    public static DutyLootPreviewConfiguration Config { get; private set; } = null!;
 
     /// ===
     /// Plugin subsystems
@@ -103,9 +102,8 @@ public class Env {
 
     public static LumSupModule LumSup { get; private set; } = null!;
     public static DutyInfoService DutyInfoService { get; private set; } = null!;
-    public static DutyLootPreviewAddon DutyLootPreviewAddon { get; private set; } = null!;
-    public static DutyLootPreviewAgent DutyLootPreviewAgent { get; private set; } = null!;
+    public static DutyLootWindowAddon DutyLootPreviewAddon { get; private set; } = null!;
+    public static DutyLootWindowAgent DutyLootPreviewAgent { get; private set; } = null!;
     public static DutyLootJournalUiController DutyLootJournalUiController { get; private set; } = null!;
-    public static DutyLootInDutyUiController DutyLootInDutyUiController { get; private set; } = null!;
-    public static PluginCommandManager PluginCommandManager { get; private set; } = null!;
+    public static InDutyController DutyLootInDutyUiController { get; private set; } = null!;
 }

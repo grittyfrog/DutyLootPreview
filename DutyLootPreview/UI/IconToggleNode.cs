@@ -3,7 +3,7 @@ using KamiToolKit.Classes;
 using KamiToolKit.Nodes;
 using KamiToolKit.Nodes.Simplified;
 
-namespace DutyLootPreview.UI.Generic;
+namespace DutyLootPreview.UI;
 
 public unsafe class IconToggleNode : SimpleComponentNode {
     private readonly IconImageNode iconNode;

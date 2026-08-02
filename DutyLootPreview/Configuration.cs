@@ -5,7 +5,7 @@ using Dalamud.Configuration;
 namespace DutyLootPreview;
 
 [Serializable]
-public class Configuration : IPluginConfiguration {
+public class DutyLootPreviewConfiguration : IPluginConfiguration {
     public int Version { get; set; } = 0;
 
     public HashSet<uint> FavoriteItems = [];

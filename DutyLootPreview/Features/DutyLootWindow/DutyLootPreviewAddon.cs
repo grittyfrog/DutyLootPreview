@@ -2,23 +2,16 @@ using System;
 using System.Linq;
 using System.Numerics;
 using DutyLootPreview.Data;
-using DutyLootPreview.Enums;
 using DutyLootPreview.Extensions;
 using DutyLootPreview.Resources;
 using FFXIVClientStructs.FFXIV.Component.GUI;
-using KamiToolKit;
 using KamiToolKit.BaseTypes;
 using KamiToolKit.Classes;
 using KamiToolKit.Nodes;
-using Lumina.Excel.Sheets;
 
 namespace DutyLootPreview.Features.DutyLootWindow;
 
-/// <summary>
-/// The main Duty Loot Preview window. Currently a walking-skeleton placeholder
-/// containing a single text node, to be replaced with the real loot UI.
-/// </summary>
-public unsafe class DutyLootPreviewAddon : NativeAddon {
+public unsafe class DutyLootWindowAddon : NativeAddon {
     private const int VisibleItemCount = 12;
     internal const float ItemHeight = 32.0f;
     private const float ItemSpacing = 2.25f;
@@ -30,7 +23,7 @@ public unsafe class DutyLootPreviewAddon : NativeAddon {
     private const float ListAreaHeight = VisibleItemCount * ItemHeight + (VisibleItemCount - 1) * ItemSpacing;
     private const float WindowHeight = ListAreaHeight + FilterBarHeight + SeparatorHeight + ItemSpacing + WindowOverhead;
 
-    public DutyLootPreviewAddon() {
+    public DutyLootWindowAddon() {
         Size = new Vector2(WindowWidth, WindowHeight);
     }
 

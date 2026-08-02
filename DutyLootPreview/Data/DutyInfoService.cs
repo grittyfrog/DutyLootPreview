@@ -13,32 +13,29 @@ public class DutyInfoService {
     private FrozenDictionary<uint, DutyInfo>? cache;
 
     public DutyInfo? GetDutyInfo(uint contentId) {
-        if (cache == null) {
-            cache = LoadDutyInfo();
-        }
-
+        cache ??= LoadDutyInfo();
         return cache.GetValueOrDefault(contentId);
     }
 
     private FrozenDictionary<uint, DutyInfo> LoadDutyInfo() {
-        var items = new List<DutyItem>();  
+        var items = new List<DutyItem>();
 
         foreach (var fight in Env.LumSup.DungeonBossDrop.Rows) {
-            if (fight.Item.ValueNullable is {} item) {
+            if (fight.Item.ValueNullable is { } item) {
                 var source = DutyItemSource.FromFight(fight);
                 items.Add(new DutyItem(fight.ContentFinderConditionId, item, source is null ? [] : [source]));
             }
         }
 
         foreach (var fight in Env.LumSup.DungeonBossChest.Rows) {
-            if (fight.Item.ValueNullable is {} item) {
+            if (fight.Item.ValueNullable is { } item) {
                 var source = DutyItemSource.FromFight(fight);
                 items.Add(new DutyItem(fight.ContentFinderConditionId, item, source is null ? [] : [source]));
             }
         }
 
         foreach (var drop in Env.LumSup.DungeonChestItem.Rows) {
-            if (drop.Item.ValueNullable is {} item && drop.Chest is {} chest && DutyItemSource.FromDungeon(drop) is {} source) {
+            if (drop.Item.ValueNullable is { } item && drop.Chest is { } chest && DutyItemSource.FromDungeon(drop) is { } source) {
                 items.Add(new DutyItem(chest.ContentFinderConditionId, item, [source]));
             }
         }

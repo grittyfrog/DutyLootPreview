@@ -16,7 +16,7 @@ using KamiToolKit.Nodes.Simplified;
 namespace DutyLootPreview.Features.DutyLootWindow;
 
 public unsafe class DutyLootNode : ListItemNode<DutyItem>, IListItemNode {
-    public static float ItemHeight => DutyLootPreviewAddon.ItemHeight;
+    public static float ItemHeight => DutyLootWindowAddon.ItemHeight;
     public static float IconPadding => 2.0f;
 
     private readonly IconImageNode iconNode;

@@ -8,7 +8,7 @@ using Lumina.Excel.Sheets;
 
 namespace DutyLootPreview.Features.DutyLootWindow;
 
-public class DutyLootPreviewAgent : IDisposable {
+public class DutyLootWindowAgent : IDisposable {
     private AddonController<AddonContentsFinder>? contentsFinder;
     private AddonController<AddonRaidFinder>? raidFinder;
 

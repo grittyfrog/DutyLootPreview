@@ -26,7 +26,7 @@
 
   
   <ItemGroup>
-    <ContentWithTargetPath Include="Resources/duty-loot-preview-icon.jpg">
+    <ContentWithTargetPath Include="Images/icon.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <TargetPath>Images/icon.png</TargetPath>
     </ContentWithTargetPath>

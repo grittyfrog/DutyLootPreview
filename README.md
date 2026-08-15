@@ -1,6 +1,8 @@
 # DutyLootPreview
 
-A Dalamud plugin for FFXIV.
+Adds a duty loot viewer to the duty window.
+
+![a picture of the duty loot preview addon](./DutyLootPreview/Resources/DutyLootPreview.png)
 
 ## Development
 

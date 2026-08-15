@@ -13,26 +13,9 @@ using DutyLootPreview.Features.JournalIntegration;
 
 namespace DutyLootPreview;
 
-/// <summary>
-/// Global environment / service locator.
-///
-/// Holds:
-///   - Dalamud-injected services (via [PluginService])
-///   - Plugin-owned subsystems, constructed in <see cref="Initialize"/>
-///
-/// Every owned IDisposable is registered through <see cref="Own{T}"/>,
-/// which guarantees it is disposed exactly once in reverse construction
-/// order when the plugin unloads. Forgetting to call Dispose on a
-/// subsystem (which leaks command handlers, UI delegates, hooks, etc. on
-/// reload) is structurally impossible as long as new subsystems use Own.
-/// </summary>
 public class Env {
     private static readonly Stack<IDisposable> Owned = new();
 
-    /// <summary>
-    /// Register an IDisposable owned by the plugin. It will be disposed in
-    /// reverse-registration order during <see cref="Dispose"/>.
-    /// </summary>
     private static T Own<T>(T obj) where T : IDisposable {
         Owned.Push(obj);
         return obj;
@@ -49,15 +32,15 @@ public class Env {
 
         LumSup = new LumSupModule();
         DutyInfoService = new DutyInfoService();
+        EventTrackers = Own(new EventTrackers());
 
         DutyLootPreviewAddon = Own(new DutyLootWindowAddon {
             InternalName = "DutyLootPreview",
             Title = Strings.Title_DutyLootPreview,
         });
 
-        DutyLootPreviewAgent = Own(new DutyLootWindowAgent());
-        DutyLootJournalUiController = Own(new DutyLootJournalUiController());
-        DutyLootInDutyUiController = Own(new InDutyController());
+        JournalUiController = Own(new JournalUiController());
+        InDutyController = Own(new InDutyController());
     }
 
     public static void Dispose() {
@@ -78,8 +61,6 @@ public class Env {
     /// ===
 
     [PluginService] public static ICommandManager CommandManager { get; private set; } = null!;
-    [PluginService] public static IChatGui ChatGui { get; private set; } = null!;
-    [PluginService] public static IClientState ClientState { get; private set; } = null!;
     [PluginService] public static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
     [PluginService] public static IDataManager DataManager { get; private set; } = null!;
     [PluginService] public static IFramework Framework { get; private set; } = null!;
@@ -87,7 +68,6 @@ public class Env {
     [PluginService] public static IPlayerState PlayerState { get; set; } = null!;
     [PluginService] public static IPluginLog PluginLog { get; private set; } = null!;
     [PluginService] public static ISeStringEvaluator SeStringEvaluator { get; private set; } = null!;
-    [PluginService] public static ITextureProvider TextureProvider { get; private set; } = null!;
     [PluginService] public static IUnlockState UnlockState { get; set; } = null!;
 
     /// ===
@@ -102,8 +82,8 @@ public class Env {
 
     public static LumSupModule LumSup { get; private set; } = null!;
     public static DutyInfoService DutyInfoService { get; private set; } = null!;
+    public static EventTrackers EventTrackers { get; private set; } = null!;
     public static DutyLootWindowAddon DutyLootPreviewAddon { get; private set; } = null!;
-    public static DutyLootWindowAgent DutyLootPreviewAgent { get; private set; } = null!;
-    public static DutyLootJournalUiController DutyLootJournalUiController { get; private set; } = null!;
-    public static InDutyController DutyLootInDutyUiController { get; private set; } = null!;
+    public static JournalUiController JournalUiController { get; private set; } = null!;
+    public static InDutyController InDutyController { get; private set; } = null!;
 }

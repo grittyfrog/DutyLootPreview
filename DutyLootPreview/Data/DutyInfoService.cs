@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using DutyLootPreview.Extensions;
 using DutyLootPreview.Extensions.LuminaSupplemental;
+using FFXIVClientStructs.FFXIV.Client.UI.Agent;
+using Lumina.Excel.Sheets;
 
 namespace DutyLootPreview.Data;
 
@@ -14,7 +16,29 @@ public class DutyInfoService {
 
     public DutyInfo? GetDutyInfo(uint contentId) {
         cache ??= LoadDutyInfo();
+        if (!IsSupportedContent(contentId)) {
+            return null;
+        }
         return cache.GetValueOrDefault(contentId);
+    }
+
+    public static bool IsSupportedContent(uint contentId) {
+        return IsSupportedContent(new ContentsId { ContentType = ContentsType.Regular, Id = contentId });
+    }
+
+    public static bool IsSupportedContent(ContentsId content) {
+        if (content.Id == 0)
+            return false;
+
+        // Not for Content Roulette
+        if (content.ContentType != ContentsType.Regular)
+            return false;
+
+        if (!Env.DataManager.GetExcelSheet<ContentFinderCondition>().TryGetRow(content.Id, out var cfc))
+            return false;
+
+        // Not for Guildhests (3), PvP (6), Gold Saucer (19)
+        return cfc.ContentType.RowId is not (3 or 6 or 19);
     }
 
     private FrozenDictionary<uint, DutyInfo> LoadDutyInfo() {

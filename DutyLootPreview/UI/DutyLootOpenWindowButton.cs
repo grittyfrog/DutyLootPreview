@@ -62,16 +62,4 @@ public class DutyLootOpenWindowButtonNode : SimpleComponentNode {
         if (IsDisposed) return;
         base.Dispose(isNativeDestructor);
     }
-
-    // private void OnDataLoaderStateChanged() {
-    //     var lootData = dataLoader.ActiveDutyLootData;
-    //     if (dataLoader.IsLoading || lootData == null || lootData.Items.Count == 0) {
-    //         CheckmarkVisible = false;
-    //         return;
-    //     }
-
-    //     var unlockableItems = lootData.Items.Where(item => item.IsUnlockable || item.IsStorableInCabinet);
-    //     var allUnlockableItemsUnlocked = unlockableItems.All(item => item.IsUnlocked || item.IsStoredInCabinet);
-    //     CheckmarkVisible = allUnlockableItemsUnlocked;
-    // }
 }

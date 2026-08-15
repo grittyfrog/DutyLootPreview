@@ -17,9 +17,8 @@ public sealed class DutyLootPreview : IDalamudPlugin {
         Env.Initialize(pluginInterface);
 
         Env.Framework.Run(() => {
-            Env.DutyLootPreviewAgent.Enable();
-            Env.DutyLootJournalUiController.Enable();
-            Env.DutyLootInDutyUiController.Enable();
+            Env.JournalUiController.Enable();
+            Env.InDutyController.Enable();
         });
 
         Env.CommandManager.AddHandler("/dlp", new CommandInfo(OnMainCommand) {

@@ -1,8 +1,10 @@
 using System;
 using System.Numerics;
+using DutyLootPreview.Data;
 using DutyLootPreview.Resources;
 using DutyLootPreview.UI;
 using FFXIVClientStructs.FFXIV.Client.UI;
+using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using KamiToolKit.Controllers;
 using KamiToolKit.Enums;
 
@@ -11,19 +13,10 @@ namespace DutyLootPreview.Features.JournalIntegration;
 /// <summary>
 /// Attaches the "Open Duty Loot" button to the Journal.
 /// </summary>
-public class DutyLootJournalUiController : IDisposable {
+public class JournalUiController : IDisposable {
     private AddonController<AddonJournalDetail>? journalDetail;
     private DutyLootOpenWindowButtonNode? lootButtonNode;
     private ushort attachedAddonId;
-
-    public uint? ActiveContentFinderConditionId {
-        get;
-        set {
-            if (field != value) {
-                field = value;
-            }
-        }
-    }
 
     public void Enable() {
         unsafe {
@@ -50,7 +43,7 @@ public class DutyLootJournalUiController : IDisposable {
         var existing = addon->DutyNameTextNode; // ID: 38
         if (existing is null) return;
 
-        // Only attach if parent is the Duty Finder
+        // Only attach if parent is the Duty Finder / Raid Finder
         if (addon->ParentId is not 0) {
             var parentAddon = RaptureAtkUnitManager.Instance()->GetAddonById(addon->ParentId);
             if (parentAddon is null || (parentAddon->NameString != "ContentsFinder" && parentAddon->NameString != "RaidFinder")) {
@@ -58,9 +51,7 @@ public class DutyLootJournalUiController : IDisposable {
             }
         }
 
-        if (journalDetail is not null) {
-            CleanupAttached();
-        }
+        CleanupAttached();
 
         lootButtonNode = new DutyLootOpenWindowButtonNode() {
             Position = new Vector2(420.0f, 68.0f),
@@ -85,12 +76,14 @@ public class DutyLootJournalUiController : IDisposable {
         var addon = Env.GameGui.GetAddonByName<AddonJournalDetail>("JournalDetail");
         if (addon == null) return;
 
-        if (!ActiveContentFinderConditionId.HasValue) {
+        var activeJournalContentFinderConditionId = GetActiveJournalContentId();
+
+        if (!activeJournalContentFinderConditionId.HasValue) {
             lootButtonNode.IsVisible = false;
             return;
         }
 
-        var dutyInfo = Env.DutyInfoService.GetDutyInfo(ActiveContentFinderConditionId.Value);
+        var dutyInfo = Env.DutyInfoService.GetDutyInfo(activeJournalContentFinderConditionId.Value);
         if (dutyInfo == null) {
             lootButtonNode.IsVisible = false;
             return;
@@ -106,9 +99,37 @@ public class DutyLootJournalUiController : IDisposable {
         CleanupAttached();
     }
 
+
+    // JournalDetail is used by Duty Finder & Raid Finder, switching between
+    // them doesn't call `Finalize`, so we need to make sure we clear any
+    // previously attached button before attaching a fresh oine.
     private void CleanupAttached() {
         lootButtonNode?.Dispose();
         lootButtonNode = null;
         attachedAddonId = 0;
     }
+
+    /// <summary>
+    /// Returns the ContentId being viewed in the Journal (if any)
+    /// </summary>
+    public static unsafe uint? GetActiveJournalContentId() {
+        var agentContentsFinder = AgentContentsFinder.Instance();
+        if (agentContentsFinder->IsAddonShown() && DutyInfoService.IsSupportedContent(agentContentsFinder->SelectedDuty)) {
+            return agentContentsFinder->SelectedDuty.Id;
+        }
+
+        var agentRaidFinder = AgentRaidFinder.Instance();
+        if (agentRaidFinder->IsAddonShown()) {
+            var selectedTab = (int)agentRaidFinder->SelectedTab;
+            var selectedEntry = (int)agentRaidFinder->SelectedEntry;
+            var raidId = agentRaidFinder->Tabs[selectedTab].Entries[selectedEntry].ContentFinderConditionId;
+
+            if (DutyInfoService.IsSupportedContent(raidId)) {
+                return raidId;
+            }
+        }
+
+        return null;
+    }
+
 }

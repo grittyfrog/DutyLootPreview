@@ -3,6 +3,8 @@ using System.Linq;
 using System.Numerics;
 using DutyLootPreview.Data;
 using DutyLootPreview.Extensions;
+using DutyLootPreview.Features.InDutyIntegration;
+using DutyLootPreview.Features.JournalIntegration;
 using DutyLootPreview.Resources;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using KamiToolKit.BaseTypes;
@@ -23,31 +25,23 @@ public unsafe class DutyLootWindowAddon : NativeAddon {
     private const float ListAreaHeight = VisibleItemCount * ItemHeight + (VisibleItemCount - 1) * ItemSpacing;
     private const float WindowHeight = ListAreaHeight + FilterBarHeight + SeparatorHeight + ItemSpacing + WindowOverhead;
 
-    public DutyLootWindowAddon() {
-        Size = new Vector2(WindowWidth, WindowHeight);
-    }
-
     private DutyLootFilterBarNode? filterBarNode;
     private HorizontalLineNode? separatorNode;
     private ListNode<DutyItem, DutyLootNode>? listNode;
     private TextNode? hintTextNode;
 
-    public uint? ContentFinderConditionId {
-        get;
-        set {
-            if (field != value) {
-                field = value;
-                refresh = true;
-            }
-        }
+    private Polled<uint?>? activeDutyContentIdPoll;
+    private Polled<uint?>? activeJournalContentIdPoll;
+    private Polled<LootFilter>? lootFilterPoll;
+
+    public DutyLootWindowAddon() {
+        Size = new Vector2(WindowWidth, WindowHeight);
     }
-    private bool refresh = true;
 
     protected override void OnSetup(AtkUnitBase* addon, Span<AtkValue> atkValueSpan) {
         filterBarNode = new DutyLootFilterBarNode {
             Position = ContentStartPosition,
-            Size = new Vector2(ContentSize.X, FilterBarHeight),
-            OnFilterChanged = _ => Refresh(),
+            Size = new Vector2(ContentSize.X, FilterBarHeight)
         };
         filterBarNode.AttachNode(this);
 
@@ -80,29 +74,32 @@ public unsafe class DutyLootWindowAddon : NativeAddon {
         UpdateHintTextNodePosition();
         hintTextNode.AttachNode(this);
 
-        filterBarNode.OnFilterChanged = OnFilterChanged;
+        activeDutyContentIdPoll = new(InDutyController.GetActiveDutyContentId);
+        activeJournalContentIdPoll = new(JournalUiController.GetActiveJournalContentId);
+        lootFilterPoll = new(() => filterBarNode.CurrentFilter);
     }
 
     protected override void OnUpdate(AtkUnitBase* addon) {
         Refresh();
     }
 
-    private void OnFilterChanged(LootFilter filer) {
-        refresh = true;
-    }
-
     private void Refresh() {
         if (listNode is null || hintTextNode is null || filterBarNode is null || separatorNode is null) return;
+        if (lootFilterPoll is null || activeDutyContentIdPoll is null || activeJournalContentIdPoll is null) return;
 
-        if (!refresh) { return; }
-        refresh = false;
+        var (lootFilter, lootFilterChanged) = lootFilterPoll.Poll();
+        var (activeDutyContentId, activeDutyContentIdChanged) = activeDutyContentIdPoll.Poll();
+        var (activeJournalContentId, activeJournalContentIdChanged) = activeJournalContentIdPoll.Poll();
 
-        var dutyInfo = ContentFinderConditionId.HasValue
-            ? Env.DutyInfoService.GetDutyInfo(ContentFinderConditionId.Value)
-            : null;
+        var changed = lootFilterChanged || activeDutyContentIdChanged || activeJournalContentIdChanged;
+        if (!changed) { return; }
+
+        var activeContentId = activeDutyContentId ?? activeJournalContentId ?? null;
+
+        var dutyInfo = activeContentId.HasValue ? Env.DutyInfoService.GetDutyInfo(activeContentId.Value) : null;
         var items = dutyInfo?.DutyItems ?? [];
 
-        var filteredItems = filterBarNode.CurrentFilter switch {
+        var filteredItems = lootFilter switch {
             LootFilter.Favorites => items.Where(dutyItem => Env.Config.FavoriteItems.Contains(dutyItem.Item.RowId)),
             LootFilter.Equipment => items.Where(dutyItem => dutyItem.Item.IsEquipment),
             LootFilter.Misc => items.Where(dutyItem => !dutyItem.Item.IsEquipment),

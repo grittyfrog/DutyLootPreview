@@ -24,6 +24,14 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  
+  <ItemGroup>
+    <ContentWithTargetPath Include="Resources/duty-loot-preview-icon.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>Images/icon.png</TargetPath>
+    </ContentWithTargetPath>
+  </ItemGroup>
+
   <PropertyGroup>
     <ResXGenerator_NullForgivingOperators>true</ResXGenerator_NullForgivingOperators>
   </PropertyGroup>

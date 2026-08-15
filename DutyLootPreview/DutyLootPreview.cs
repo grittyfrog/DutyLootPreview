@@ -1,6 +1,8 @@
+using System;
 using System.Globalization;
 using Dalamud.Game.Command;
 using Dalamud.Plugin;
+using DutyLootPreview.Features.VanillaPlusImport;
 using DutyLootPreview.Resources;
 using KamiToolKit;
 
@@ -22,8 +24,10 @@ public sealed class DutyLootPreview : IDalamudPlugin {
         });
 
         Env.CommandManager.AddHandler("/dlp", new CommandInfo(OnMainCommand) {
-            HelpMessage = "Toggle the Duty Loot Preview window."
+            HelpMessage = "Toggle the Duty Loot Preview window. Use \"/dlp import\" to import favorites from VanillaPlus."
         });
+
+        VanillaPlusImporter.PromptIfAvailable();
     }
 
     public void Dispose() {
@@ -34,6 +38,11 @@ public sealed class DutyLootPreview : IDalamudPlugin {
     }
 
     private void OnMainCommand(string command, string arguments) {
+        if (arguments.Trim().Equals("import", StringComparison.OrdinalIgnoreCase)) {
+            VanillaPlusImporter.Import();
+            return;
+        }
+
         Env.DutyLootPreviewAddon.Toggle();
     }
 

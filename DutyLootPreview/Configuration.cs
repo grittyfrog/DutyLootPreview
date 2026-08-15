@@ -10,6 +10,10 @@ public class DutyLootPreviewConfiguration : IPluginConfiguration {
 
     public HashSet<uint> FavoriteItems = [];
 
+    public bool ImportedFromVanillaPlus;
+
+    public bool VanillaPlusImportPrompted;
+
     public void Save() {
         Env.PluginInterface.SavePluginConfig(this);
     }

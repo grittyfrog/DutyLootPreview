@@ -6,4 +6,12 @@ public class LumSupModule {
     public DungeonBossChestSheet DungeonBossChest { get; } = new();
     public DungeonChestSheet DungeonChest { get; } = new();
     public DungeonChestItemSheet DungeonChestItem { get; } = new();
+
+    public void Prewarm() {
+        DungeonBoss.Prewarm();
+        DungeonBossDrop.Prewarm();
+        DungeonBossChest.Prewarm();
+        DungeonChest.Prewarm();
+        DungeonChestItem.Prewarm();
+    }
 }

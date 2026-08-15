@@ -31,7 +31,9 @@ public class Env {
         Config = PluginInterface.GetPluginConfig() as DutyLootPreviewConfiguration ?? new DutyLootPreviewConfiguration();
 
         LumSup = new LumSupModule();
+        LumSup.Prewarm();
         DutyInfoService = new DutyInfoService();
+        DutyInfoService.Prewarm();
         EventTrackers = Own(new EventTrackers());
 
         DutyLootPreviewAddon = Own(new DutyLootWindowAddon {

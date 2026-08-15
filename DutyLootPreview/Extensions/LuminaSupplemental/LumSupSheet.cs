@@ -4,19 +4,22 @@ using System.Collections.Frozen;
 using System.Collections.Immutable;
 
 using System.Linq;
+using System.Threading.Tasks;
 using LuminaSupplemental.Excel.Model;
 using LuminaSupplemental.Excel.Services;
 
 namespace DutyLootPreview.Extensions.LuminaSupplemental;
 
 public abstract class LumSupSheet<TRow> where TRow : ICsv, new() {
-    private readonly Lazy<IReadOnlyList<TRow>> rows;
+    private readonly Lazy<Task<IReadOnlyList<TRow>>> rows;
 
     protected LumSupSheet(string resourceName) {
-        rows = new Lazy<IReadOnlyList<TRow>>(() => Load(resourceName));
+        rows = new Lazy<Task<IReadOnlyList<TRow>>>(() => Task.Run(() => Load(resourceName)));
     }
 
-    public IReadOnlyList<TRow> Rows => rows.Value;
+    public void Prewarm() => _ = rows.Value;
+
+    public IReadOnlyList<TRow> Rows => rows.Value.GetAwaiter().GetResult();
 
     protected Lazy<FrozenDictionary<TKey, TRow>> MakeIndex<TKey>(Func<TRow, TKey> keyFn) where TKey : notnull
         => new(() => Rows.ToFrozenDictionary(keyFn));

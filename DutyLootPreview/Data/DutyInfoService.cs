@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using DutyLootPreview.Extensions;
 using DutyLootPreview.Extensions.LuminaSupplemental;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
@@ -12,14 +14,16 @@ namespace DutyLootPreview.Data;
 /// Retrieve duty loot info about a duty.
 /// </summary>
 public class DutyInfoService {
-    private FrozenDictionary<uint, DutyInfo>? cache;
+    private readonly Lazy<Task<FrozenDictionary<uint, DutyInfo>>> cache = new(() => Task.Run(LoadDutyInfo));
+
+    public void Prewarm() => _ = cache.Value;
 
     public DutyInfo? GetDutyInfo(uint contentId) {
-        cache ??= LoadDutyInfo();
         if (!IsSupportedContent(contentId)) {
             return null;
         }
-        return cache.GetValueOrDefault(contentId);
+
+        return cache.Value.GetAwaiter().GetResult().GetValueOrDefault(contentId);
     }
 
     public static bool IsSupportedContent(uint contentId) {
@@ -41,35 +45,41 @@ public class DutyInfoService {
         return cfc.ContentType.RowId is not (3 or 6 or 19);
     }
 
-    private FrozenDictionary<uint, DutyInfo> LoadDutyInfo() {
-        var items = new List<DutyItem>();
+    private static FrozenDictionary<uint, DutyInfo> LoadDutyInfo() {
+        try {
+            var items = new List<DutyItem>();
 
-        foreach (var fight in Env.LumSup.DungeonBossDrop.Rows) {
-            if (fight.Item.ValueNullable is { } item) {
-                var source = DutyItemSource.FromFight(fight);
-                items.Add(new DutyItem(fight.ContentFinderConditionId, item, source is null ? [] : [source]));
+            foreach (var fight in Env.LumSup.DungeonBossDrop.Rows) {
+                if (fight.Item.ValueNullable is { } item) {
+                    var source = DutyItemSource.FromFight(fight);
+                    items.Add(new DutyItem(fight.ContentFinderConditionId, item, source is null ? [] : [source]));
+                }
             }
-        }
 
-        foreach (var fight in Env.LumSup.DungeonBossChest.Rows) {
-            if (fight.Item.ValueNullable is { } item) {
-                var source = DutyItemSource.FromFight(fight);
-                items.Add(new DutyItem(fight.ContentFinderConditionId, item, source is null ? [] : [source]));
+            foreach (var fight in Env.LumSup.DungeonBossChest.Rows) {
+                if (fight.Item.ValueNullable is { } item) {
+                    var source = DutyItemSource.FromFight(fight);
+                    items.Add(new DutyItem(fight.ContentFinderConditionId, item, source is null ? [] : [source]));
+                }
             }
-        }
 
-        foreach (var drop in Env.LumSup.DungeonChestItem.Rows) {
-            if (drop.Item.ValueNullable is { } item && drop.Chest is { } chest && DutyItemSource.FromDungeon(drop) is { } source) {
-                items.Add(new DutyItem(chest.ContentFinderConditionId, item, [source]));
+            foreach (var drop in Env.LumSup.DungeonChestItem.Rows) {
+                if (drop.Item.ValueNullable is { } item && drop.Chest is { } chest && DutyItemSource.FromDungeon(drop) is { } source) {
+                    items.Add(new DutyItem(chest.ContentFinderConditionId, item, [source]));
+                }
             }
-        }
 
-        var merged = DutyItem.MergeDuplicates(items);
-        return merged
-            .GroupBy(item => item.ContentFinderConditionId)
-            .ToFrozenDictionary(
-                g => g.Key,
-                g => new DutyInfo { ContentId = g.Key, DutyItems = g.ToList() }
-            );
+            var merged = DutyItem.MergeDuplicates(items);
+            return merged
+                .GroupBy(item => item.ContentFinderConditionId)
+                .ToFrozenDictionary(
+                    g => g.Key,
+                    g => new DutyInfo { ContentId = g.Key, DutyItems = g.ToList() }
+                );
+        }
+        catch (Exception ex) {
+            Env.PluginLog.Error(ex, "Failed to build duty loot cache; returning empty data.");
+            return FrozenDictionary<uint, DutyInfo>.Empty;
+        }
     }
 }
